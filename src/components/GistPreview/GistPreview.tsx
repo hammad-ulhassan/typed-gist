@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGist } from "../../api/gists";
 import { IGist } from "../../api/types";
@@ -24,10 +24,10 @@ export default function GistPreview({ gist, splitter }: GistPreviewPropType) {
     });
   }, [gist?.id]);
 
-  function navigateToGist() {
+  const navigateToGist = useCallback(()=>{
     //dispatch
     navigate(`/gist/${gist?.id}`);
-  }
+  }, [])
   //split utility [todo]
 
   return (

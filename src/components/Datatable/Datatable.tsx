@@ -77,6 +77,7 @@ function Datatable({ data, loading, onPageChange }: DatatableProps) {
         defaultPageSize: 10,
         showSizeChanger: true,
         total: 1000,
+        pageSize: 10,
         onChange: (page, pageSize) => onPageChange(page, pageSize),
       }}
       onRow={(record, rowIndex) => {

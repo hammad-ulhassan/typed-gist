@@ -14,7 +14,7 @@ export const initialState: IPublicGistsState = {
   gists: [],
   selectedGist: null,
   page: 1,
-  pageSize: 9,
+  pageSize: 10,
   loading: false,
   selectedGistData: null,
 };

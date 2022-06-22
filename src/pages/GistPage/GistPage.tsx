@@ -13,6 +13,7 @@ import { SelectedGistContext } from "../../contexts/gistPageContext/provider";
 import {
   SETFORKS,
   SETLOGGEDIN,
+  SETSELECTEDGISTDATA,
   SETSELECTEDGISTID,
   SETSHOWPERSONALCONTROLS,
 } from "../../globals/constants/actionTypes";
@@ -30,39 +31,40 @@ export const GistPage = () => {
   const { state, dispatch } = useContext(SelectedGistContext);
   const navigate = useNavigate();
   const [starred, setStarred] = useState(false);
+  const currentGistId = JSON.parse(
+    localStorage.getItem(SELECTED_GIST) as string
+  ).id;
 
   const editGist = useCallback(() => {
-    const gistId = JSON.parse(localStorage.getItem(SELECTED_GIST) as string).id;
-    navigate(`/edit/${gistId}`);
+    navigate(`/edit/${currentGistId}`);
   }, []);
 
   function deleteGist() {}
 
-  function onForkGist() {
-    // forkGist(state)(dispatch);
-    // console.log(state.selectedGistId);
+  const onForkGist = useCallback(() => {
     forkGist(state.selectedGistId)
       .then(() => {
         message.success("Gist has been forked", 3);
+        setStarred(true)
       })
       .catch(() => {
         message.error("There was an error");
       });
-  }
+  }, []);
 
-  function onStarGist() {
-    starGist(state.selectedGistId)
-      .then(() => {
+  const onStarGist = useCallback(() => {
+    starGist(state.selectedGistId).then((status) => {
+      if (status === 204) {
         message.success("Gist has been starred", 3);
-        setStarred(true);
-      })
-      .catch(() => {
-        message.error("There was an error");
-      });
-  }
+      } else {
+        message.error("Error starring Gist");
+      }
+    });
+  }, [state.selectedGistId, state.selectedGistData]);
 
   useEffect(() => {
     if (id) {
+      console.log(id);
       dispatch({
         type: SETSELECTEDGISTID,
         payload: id,
@@ -72,6 +74,7 @@ export const GistPage = () => {
 
   useEffect(() => {
     if (state.selectedGistId) {
+      console.log(`fetching data for ${state.selectedGistId}`);
       fetchGistData(state)(dispatch);
     }
   }, [state.selectedGistId]);
@@ -127,11 +130,12 @@ export const GistPage = () => {
         ) : null}
       </CSBWrapper>
       <ColFSWrapper gap="0.5vh">
-        {!state.loading && state.selectedGistData ? (
+        {state.selectedGistData ? (
           Object.keys(state.selectedGistData?.files)
             .map((fn) => state.selectedGistData?.files[fn])
             .map((file, index) => (
               <GistCard
+                gist={state.selectedGistData}
                 style={{ minWidth: "100%", margin: "1%" }}
                 filename={file.filename}
                 content={file.content}

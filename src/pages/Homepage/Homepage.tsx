@@ -23,7 +23,8 @@ export default function Homepage() {
   }, []);
 
   const onPageChange = useCallback(
-    ([page, pageSize]:[number, number]) => {
+    (page: number, pageSize: number) => {
+      console.log(page, pageSize)
       if (page) {
         publicGistDispatch({ type: SETPAGE, payload: page });
       }
