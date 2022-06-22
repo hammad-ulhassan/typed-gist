@@ -1,0 +1,22 @@
+#page {
+    display: grid;
+    width: 100%;
+    height: 100vh;
+    grid-template-areas:
+      "head"
+      "main";
+    grid-template-rows: 10vh auto;
+    gap:1%;
+  }
+  
+  #page>header {
+    grid-area: head;
+    min-width: 10%;
+  }
+  
+  #page>main {
+    height: 100%;
+    grid-area: main;
+    overflow: auto;
+    width: 100%;
+  }
